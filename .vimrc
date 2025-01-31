@@ -46,14 +46,15 @@ Plug 'preservim/nerdtree'
 Plug 'itchyny/lightline.vim'
 Plug 'tribela/vim-transparent'
 Plug 'sainnhe/everforest'
-"Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-fugitive'
 Plug 'dense-analysis/ale'
+"Plug 'valloric/youcompleteme'
 call plug#end()
 
-map <C-o> : NERDTreeToggle<CR> 
+map <C-o> :NERDTreeToggle<CR> 
 map ; :Files<CR>
+map <C-i> :ALEGoToImplementation<CR>
 
 let g:lightline = {
   \     'active': {

@@ -49,12 +49,12 @@ call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } " Fuzzy Finder
 Plug 'junegunn/fzf.vim'
 Plug 'preservim/nerdtree' " Explorateur de fichiers
-Plug 'itchyny/lightline.vim' " Barre de statut légère
 Plug 'tribela/vim-transparent' " Rend Vim transparent (utile pour les terminaux)
 Plug 'sheerun/vim-polyglot' " Support amélioré de la syntaxe pour plusieurs langages
 Plug 'tpope/vim-fugitive' " Intégration avec Git
 Plug 'dense-analysis/ale' " Outil de linting et correction automatique
-Plug 'liuchengxu/vista.vim'
+Plug 'preservim/tagbar'
+Plug 'vim-airline/vim-airline'
 call plug#end()
 
 " === Raccourcis Clavier ===
@@ -63,20 +63,26 @@ nnoremap ; :Files<CR>
 nnoremap <C-i> :ALEGoToImplementation<CR>
 nnoremap <C-d> :ALEGoToDefinition<CR>
 nnoremap ] $
-nnoremap <F8> :Vista!!<CR>  " Ouvre/ferme la fenêtre d'outline avec F8
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+nmap <F8> :TagbarToggle<CR>
 
-" === Configuration de Lightline ===
-let g:lightline = {
-  \ 'active': {
-  \     'left': [['mode', 'paste'], ['readonly', 'filename', 'modified']],
-  \     'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
-  \ }
-  \ }
+" === Configuration de Airline ===
+function! MyTagbarContext()
+    let l:class = tagbar#currenttag('%s', '', 'c')  " Récupère uniquement les classes
+    let l:function = tagbar#currenttag('%s', '', 'f')  " Récupère uniquement les fonctions
 
+    if l:class != '' && l:function != ''
+        return l:class . ' -> ' . l:function
+    elseif l:function != ''
+        return l:function
+    elseif l:class != ''
+        return l:class
+    else
+        return ''
+    endif
+endfunction
+let g:airline_section_c = '%{MyTagbarContext()}'
+
+" === Configuration de Tagbar ===
 let g:tagbar_ctags_bin = '$HOME/.local/bin/ctags'
-let g:vista_update_on_text_changed = 1
-let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-let g:vista_default_executive = 'ctags'  " Utilise ctags pour détecter les fonctions
-let g:vista#renderer#enable_icon = 0
-
+let g:tagbar_sort = 0
